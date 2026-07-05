@@ -55,7 +55,7 @@
       text-align: center;
     }
 
-    .hero-container { position: relative; cursor: pointer; }
+    .hero-container { position: relative; cursor: pointer; min-width: 0; width: 100%; }
 
     .hero h1 {
       font-family: 'Bebas Neue', sans-serif;
@@ -135,6 +135,7 @@
     @keyframes sliceDrift { 0% { transform: translateX(-12px); } 50% { transform: translateX(12px); } 100% { transform: translateX(-12px); } }
 
     .char-box { position: relative; display: inline-block; opacity: 0; transform: translateY(2px); animation: charIn 0.2s forwards; }
+    .word-box { display: inline-block; }
     @keyframes charIn { to { opacity: 1; transform: translateY(0); } }
 
     /* --- CONTACT BUTTONS --- */
@@ -904,10 +905,18 @@
       const currentStr = currentList[rIdx % currentList.length];
 
       if (isDeleting) {
-        const lastChar = cursorEl.previousElementSibling;
-        if (lastChar) {
-          if (isHyperdrive) burstChar(lastChar);
-          lastChar.remove();
+        const lastNode = cursorEl.previousSibling;
+        if (lastNode) {
+          if (lastNode.nodeType === 3) {
+            lastNode.remove();
+          } else if (lastNode.nodeType === 1 && lastNode.classList.contains('word-box')) {
+            const lastCharSpan = lastNode.lastElementChild;
+            if (lastCharSpan) {
+              if (isHyperdrive) burstChar(lastCharSpan);
+              lastCharSpan.remove();
+            }
+            if (lastNode.childNodes.length === 0) lastNode.remove();
+          }
         }
         charIdx--;
         if (charIdx < 0) {
@@ -919,10 +928,20 @@
         }
       } else {
         const char = currentStr.charAt(charIdx);
-        const span = document.createElement('span');
-        span.className = 'char-box';
-        span.textContent = char === " " ? "\u00A0" : char;
-        target.insertBefore(span, cursorEl);
+        if (char === ' ') {
+          target.insertBefore(document.createTextNode(' '), cursorEl);
+        } else {
+          let wordBox = cursorEl.previousSibling;
+          if (!wordBox || wordBox.nodeType !== 1 || !wordBox.classList.contains('word-box')) {
+            wordBox = document.createElement('span');
+            wordBox.className = 'word-box';
+            target.insertBefore(wordBox, cursorEl);
+          }
+          const span = document.createElement('span');
+          span.className = 'char-box';
+          span.textContent = char;
+          wordBox.appendChild(span);
+        }
         charIdx++;
         if (charIdx === currentStr.length) {
           isDeleting = true;
@@ -960,7 +979,7 @@
       clearTimeout(typingTimeout);
       clearTimeout(restartTimeout);
       document.querySelectorAll('.char-box').forEach(burstChar);
-      target.querySelectorAll('.char-box').forEach(el => el.remove());
+      Array.from(target.childNodes).forEach(node => { if (node !== cursorEl) node.remove(); });
       charIdx = 0;
       isDeleting = false;
       rIdx = 0;
