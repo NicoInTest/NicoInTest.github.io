@@ -179,6 +179,59 @@
 
     .social-link:hover::before { opacity: 0.22; transform: scale(1); }
 
+    .social-link[data-label]::after {
+      content: attr(data-label);
+      position: absolute;
+      top: -1.9rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+    }
+    .social-link:hover[data-label]::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .social-link:hover svg:not(.btn-circle) {
+      transform: scale(1.15) rotate(-8deg);
+    }
+
+    /* HYPERDRIVE: icons run "hot" even without hover, matching the rest of the UI */
+    .hyperdrive .social-link {
+      color: #fff;
+      animation: card-shake 0.15s infinite;
+    }
+    .hyperdrive .social-link::before {
+      opacity: 0.1;
+      background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+      animation: iconGlowPulse 1.4s ease-in-out infinite;
+    }
+    @keyframes iconGlowPulse {
+      0%, 100% { opacity: 0.08; }
+      50% { opacity: 0.24; }
+    }
+    .hyperdrive .btn-circle circle:not(.bg-ring) {
+      stroke: #fff;
+      stroke-dasharray: 40 161.06;
+      stroke-dashoffset: 0;
+      opacity: 0.85;
+    }
+    .hyperdrive .btn-circle {
+      animation: iconSweep 1.6s linear infinite;
+    }
+    @keyframes iconSweep {
+      from { transform: rotate(-90deg); }
+      to { transform: rotate(270deg); }
+    }
+    .hyperdrive .social-link:hover .btn-circle circle:not(.bg-ring) { opacity: 1; }
+    .hyperdrive .social-link:hover svg:not(.btn-circle) {
+      transform: scale(1.15) rotate(8deg);
+    }
+
     .btn-circle {
       position: absolute;
       inset: 0;
@@ -504,6 +557,9 @@
       .shrapnel { display: none !important; }
       .cursor-box { animation: none; opacity: 1; }
       .hyperdrive .benchmark-card { animation: none; }
+      .hyperdrive .social-link { animation: none; }
+      .hyperdrive .btn-circle { animation: none; }
+      .hyperdrive .social-link::before { animation: none; opacity: 0.12; }
       .stack-card::before { animation: none; }
       .char-box { animation: none; opacity: 1; transform: none; }
       .lead-item { opacity: 1; transform: none; transition: none; }
@@ -631,21 +687,21 @@
       </div>
 
       <div class="contact-icons">
-        <a class="social-link" href="mailto:admin@nicobonaminio.com" aria-label="Email Nico">
+        <a class="social-link" href="mailto:admin@nicobonaminio.com" aria-label="Email Nico" data-label="EMAIL">
           <svg class="btn-circle" viewBox="0 0 68 68">
             <circle class="bg-ring" cx="34" cy="34" r="32"></circle>
             <circle cx="34" cy="34" r="32"></circle>
           </svg>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
         </a>
-        <a class="social-link" target="_blank" href="https://github.com/NicoInTest" aria-label="Nico's GitHub profile">
+        <a class="social-link" target="_blank" href="https://github.com/NicoInTest" aria-label="Nico's GitHub profile" data-label="GITHUB">
           <svg class="btn-circle" viewBox="0 0 68 68">
             <circle class="bg-ring" cx="34" cy="34" r="32"></circle>
             <circle cx="34" cy="34" r="32"></circle>
           </svg>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
         </a>
-        <a class="social-link" target="_blank" href="https://www.linkedin.com/in/Nico-Bonaminio" aria-label="Nico's LinkedIn profile">
+        <a class="social-link" target="_blank" href="https://www.linkedin.com/in/Nico-Bonaminio" aria-label="Nico's LinkedIn profile" data-label="LINKEDIN">
           <svg class="btn-circle" viewBox="0 0 68 68">
             <circle class="bg-ring" cx="34" cy="34" r="32"></circle>
             <circle cx="34" cy="34" r="32"></circle>
