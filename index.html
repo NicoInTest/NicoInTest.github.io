@@ -449,17 +449,19 @@
     }
 
     /* SWAP LOGIC: Remove static glow, show moving border on hover/hyperdrive */
-    .benchmark-card:hover::before, 
+    .benchmark-card:hover::before,
+    .benchmark-card.card-active::before,
     .hyperdrive .benchmark-card::before { 
       opacity: 1; 
     }
 
-    .benchmark-card:hover::after, 
+    .benchmark-card:hover::after,
+    .benchmark-card.card-active::after,
     .hyperdrive .benchmark-card::after { 
       opacity: 0; 
     }
 
-    .benchmark-card:hover {
+    .benchmark-card:hover, .benchmark-card.card-active {
       background: rgba(129, 140, 248, 0.02);
       transform: translateY(-5px);
     }
@@ -474,15 +476,109 @@
     .game-logo {
       color: #fff;
       font-size: 2rem;
+      width: 2rem;
+      height: 2rem;
       margin-bottom: 2rem;
       display: block;
+      position: relative;
+      transform-box: fill-box;
+      transform-origin: center;
       transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1.2);
     }
 
-    .benchmark-card:hover .game-logo, 
+    .game-logo::before, .game-logo::after {
+      content: '';
+      position: absolute;
+      left: -6px;
+      width: 20px;
+      height: 3px;
+      border-radius: 3px;
+      background: currentColor;
+      box-shadow: 0 0 6px currentColor;
+      opacity: 0;
+      transform: translate(-100%, -50%);
+      pointer-events: none;
+    }
+    .game-logo::before { top: 38%; }
+    .game-logo::after { top: 66%; width: 13px; }
+
+    .benchmark-card:hover .game-logo,
+    .benchmark-card.card-active .game-logo,
     .hyperdrive .game-logo {
       color: var(--card-accent);
       transform: scale(1.25);
+    }
+
+    .benchmark-card:hover .game-logo.icon-car,
+    .benchmark-card.card-active .game-logo.icon-car,
+    .hyperdrive .game-logo.icon-car {
+      animation: carBounce 0.5s ease-in-out infinite;
+    }
+    .benchmark-card:hover .game-logo.icon-horse,
+    .benchmark-card.card-active .game-logo.icon-horse,
+    .hyperdrive .game-logo.icon-horse {
+      animation: horseGallop 0.45s ease-in-out infinite;
+    }
+    .benchmark-card:hover .game-logo::before,
+    .benchmark-card.card-active .game-logo::before,
+    .hyperdrive .game-logo::before {
+      animation: speedStreak 0.5s ease-in-out infinite;
+    }
+    .benchmark-card:hover .game-logo::after,
+    .benchmark-card.card-active .game-logo::after,
+    .hyperdrive .game-logo::after {
+      animation: speedStreak 0.5s ease-in-out infinite 0.15s;
+    }
+
+    @keyframes carBounce {
+      0%   { transform: scale(1.25, 1.25) translateY(0) rotate(0deg); }
+      22%  { transform: scale(1.28, 1.2) translateY(-4px) rotate(-2deg); }
+      50%  { transform: scale(1.24, 1.27) translateY(0.5px) rotate(0.5deg); }
+      74%  { transform: scale(1.27, 1.21) translateY(-2px) rotate(1.5deg); }
+      100% { transform: scale(1.25, 1.25) translateY(0) rotate(0deg); }
+    }
+    @keyframes horseGallop {
+      0% { transform: scale(1.25) translateY(0) rotate(0deg); }
+      20% { transform: scale(1.25) translateY(-7px) rotate(-8deg); }
+      40% { transform: scale(1.25) translateY(0) rotate(4deg); }
+      60% { transform: scale(1.25) translateY(-3px) rotate(-4deg); }
+      80% { transform: scale(1.25) translateY(0) rotate(2deg); }
+      100% { transform: scale(1.25) translateY(0) rotate(0deg); }
+    }
+    @keyframes speedStreak {
+      0% { opacity: 0; transform: translate(-20%, -50%); }
+      35% { opacity: 0.95; }
+      100% { opacity: 0; transform: translate(-220%, -50%); }
+    }
+
+    /* Car trails vertically beneath it (its motion is a vertical bounce, not horizontal) */
+    .icon-car::before, .icon-car::after {
+      left: auto;
+      top: auto;
+      bottom: -6px;
+      width: 3px;
+      height: 20px;
+      border-radius: 3px;
+      box-shadow: 0 0 6px currentColor;
+      transform: translate(-50%, 40%);
+    }
+    .icon-car::before { left: 36%; }
+    .icon-car::after { left: 62%; height: 13px; }
+
+    .benchmark-card:hover .icon-car::before,
+    .benchmark-card.card-active .icon-car::before,
+    .hyperdrive .icon-car::before {
+      animation: speedStreakDown 0.5s ease-in-out infinite;
+    }
+    .benchmark-card:hover .icon-car::after,
+    .benchmark-card.card-active .icon-car::after,
+    .hyperdrive .icon-car::after {
+      animation: speedStreakDown 0.5s ease-in-out infinite 0.15s;
+    }
+    @keyframes speedStreakDown {
+      0% { opacity: 0; transform: translate(-50%, 20%); }
+      35% { opacity: 0.95; }
+      100% { opacity: 0; transform: translate(-50%, 220%); }
     }
 
     .benchmark-card h4 { 
@@ -526,7 +622,8 @@
       transition: all 0.4s ease;
     }
 
-    .benchmark-card:hover .verify-btn {
+    .benchmark-card:hover .verify-btn,
+    .benchmark-card.card-active .verify-btn {
       background: var(--card-accent);
       color: #000;
       transform: scale(1.1); /* Expands the button */
@@ -559,6 +656,7 @@
       .hyperdrive .benchmark-card { animation: none; }
       .hyperdrive .social-link { animation: none; }
       .hyperdrive .btn-circle { animation: none; }
+      .game-logo, .game-logo::before, .game-logo::after { animation: none !important; }
       .hyperdrive .social-link::before { animation: none; opacity: 0.12; }
       .stack-card::before { animation: none; }
       .char-box { animation: none; opacity: 1; transform: none; }
@@ -834,7 +932,7 @@
       <div class="benchmark-grid">
         <!-- GTA Card -->
         <div class="benchmark-card gta-card" style="--card-accent: #ffd700;">
-           <i class="fas fa-car game-logo"></i>
+           <svg class="game-logo icon-car" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M135.2 117.4L109.1 192H402.9l-26.1-74.6C372.3 104.6 360.2 96 346.6 96H165.4c-13.6 0-25.7 8.6-30.2 21.4zM39.6 196.8L74.8 96.3C88.3 57.8 124.6 32 165.4 32H346.6c40.8 0 77.1 25.8 90.6 64.3l35.2 100.5c23.2 9.6 39.6 32.5 39.6 59.2V400v48c0 17.7-14.3 32-32 32H448c-17.7 0-32-14.3-32-32V400H96v48c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V400 256c0-26.7 16.4-49.6 39.6-59.2zM128 288c0-17.7-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32s32-14.3 32-32zm288 32c17.7 0 32-14.3 32-32s-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32z"/></svg>
            <h4>GRAND THEFT AUTO V</h4>
            <p class="credit-meta">Rockstar Games</p>
            <div>
@@ -845,7 +943,7 @@
 
         <!-- RDR Card -->
         <div class="benchmark-card rdr-card" style="--card-accent: #b91c1c;">
-           <i class="fas fa-horse game-logo"></i>
+           <svg class="game-logo icon-horse" viewBox="0 0 576 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M448 238.1V160h16l9.8 19.6c12.5 25.1 42.2 36.4 68.3 26c20.5-8.2 33.9-28 33.9-50.1V80c0-19.1-8.4-36.3-21.7-48H560c8.8 0 16-7.2 16-16s-7.2-16-16-16H480 448C377.3 0 320 57.3 320 128H224 203.2 148.8c-30.7 0-57.6 16.3-72.5 40.8C33.2 174.5 0 211.4 0 256v56c0 13.3 10.7 24 24 24s24-10.7 24-24V256c0-13.4 6.6-25.2 16.7-32.5c1.6 13 6.3 25.4 13.6 36.4l28.2 42.4c8.3 12.4 6.4 28.7-1.2 41.6c-16.5 28-20.6 62.2-10 93.9l17.5 52.4c4.4 13.1 16.6 21.9 30.4 21.9h33.7c21.8 0 37.3-21.4 30.4-42.1l-20.8-62.5c-2.1-6.4-.5-13.4 4.3-18.2l12.7-12.7c13.2-13.2 20.6-31.1 20.6-49.7c0-2.3-.1-4.6-.3-6.9l84 24c4.1 1.2 8.2 2.1 12.3 2.8V480c0 17.7 14.3 32 32 32h32c17.7 0 32-14.3 32-32V315.7c19.2-19.2 31.5-45.7 32-75.7h0v-1.9zM496 96c-8.8 0-16-7.2-16-16s7.2-16 16-16s16 7.2 16 16s-7.2 16-16 16z"/></svg>
            <h4>RED DEAD REDEMPTION 2</h4>
            <p class="credit-meta">Rockstar Games</p>
            <div>
@@ -1072,6 +1170,17 @@
       });
     }, { threshold: 0.4 });
     navSections.forEach(s => { if (s) navObserver.observe(s); });
+
+    // Touch devices don't have reliable :hover — let a tap trigger the same
+    // credit-card animations (icon bounce/gallop, streaks, border sweep) directly.
+    document.querySelectorAll('.benchmark-card').forEach(card => {
+      let activeTimeout;
+      card.addEventListener('click', () => {
+        card.classList.add('card-active');
+        clearTimeout(activeTimeout);
+        activeTimeout = setTimeout(() => card.classList.remove('card-active'), 1800);
+      });
+    });
 
     window.addEventListener('resize', init);
     init();
